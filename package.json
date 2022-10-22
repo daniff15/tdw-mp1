@@ -8,6 +8,7 @@
     "start": "next start",
     "setup": "node ./contentful/setup.js",
     "lint": "next lint",
+    "prettier": "npx prettier --write .",
     "test": "jest"
   },
   "dependencies": {
