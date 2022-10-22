@@ -74,6 +74,6 @@ jobs:
     steps:
       - uses: jsmrcaga/action-netlify-deploy@v1.1.0
         with:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.MY_TOKEN_SECRET }}
-          NETLIFY_SITE_ID: ${{ secrets.MY_SITE_ID_SECRET }}
-          NETLIFY_DEPLOY_TO_PROD: true
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_PUBLISH_DIR: ./out
