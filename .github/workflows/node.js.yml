@@ -35,26 +35,12 @@ jobs:
         run: npm run lint
       - name: Run Prettier
         run: npm run prettier
-
-  test:
-    runs-on: ubuntu-latest
-    needs: install
-    steps:
-      - uses: actions/checkout@v2
-      - name: Cache node modules
-        id: cache-nodemodules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - name: Run Tests
         run: npm run test
 
   build:
     runs-on: ubuntu-latest
-    needs: install
+    needs: validation
     steps:
       - uses: actions/checkout@v2
       - name: Cache node modules
@@ -70,7 +56,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [test, validation, build]
+    needs: [build]
     steps:
       - uses: jsmrcaga/action-netlify-deploy@v1.1.0
         with:
