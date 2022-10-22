@@ -3,37 +3,28 @@ name: Netlify workflow
 on: push
 
 jobs:
-  build:
+  deploy:
+    # Operating system to run job on
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+    # Steps in job
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      # Get code from repo
+      - name: Checkout code
+        uses: actions/checkout@v1
+      # Install NodeJS
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-
+          node-version: 12.x
+      # Run npm install and build on our code
       - run: npm install
-
-      - run: npm run build
-
-      - name: Run the tests and generate coverage report
-        run: npm run test
-
-      - name: Codecov
-        uses: codecov/codecov-action@v2.1.0
-
-      - name: Netlify Deploy
-        # uses: jsmrcaga/action-netlify-deploy@v1.7.1
-
+      - run: npm run build --if-present
+      # Deploy to Netlify using our production secrets
+      - name: Deploy to netlify
+        uses: netlify/actions/cli@master
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: netlify deploy --prod
+        with:
+          args: deploy --dir=build --prod
+          secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'
