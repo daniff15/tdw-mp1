@@ -43,13 +43,13 @@ jobs:
     needs: validation
     steps:
       - uses: actions/checkout@v2
-      - name: Cache node modules
-        id: cache-nodemodules
+      - name: Cache out folder
+        id: cache-out
         uses: actions/cache@v2
         env:
-          cache-name: cache-node-modules
+          cache-name: cache-out
         with:
-          path: node_modules
+          path: ./out
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - name: Build
         run: npm run build
