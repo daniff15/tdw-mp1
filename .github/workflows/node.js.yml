@@ -14,11 +14,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-  run-linters:
-    runs-on: ubuntu-latest
+  validation:
     needs: install
+    runs-on: ubuntu-latest
     steps:
-      - name: Run eslint
+      - uses: actions/checkout@v2
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - name: Install dependencies
+        run: npm install
+      - name: Run Linters
         run: npm run lint
-      - name: Run prettier
-        run: npm run format:check
+      - name: Run Prettier
+        run: npm run prettier
