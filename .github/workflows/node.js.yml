@@ -52,12 +52,20 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - name: Build
         run: npm run build
+      - name: Upload Out file
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: /github/workspace/build
 
   deploy:
-    name: "Deploy"
     runs-on: ubuntu-latest
-
+    needs: [build]
     steps:
+      - name: Download Build File
+        uses: actions/download-artifact@v2
+        with:
+          name: build
       - uses: actions/checkout@v2
       - uses: jsmrcaga/action-netlify-deploy@master
         with:
