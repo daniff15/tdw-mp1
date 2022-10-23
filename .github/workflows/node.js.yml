@@ -73,8 +73,5 @@ jobs:
         with:
           path: out
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - uses: actions/checkout@v2
-      - uses: jsmrcaga/action-netlify-deploy@master
-        with:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      - name: Deploy
+        run: npx netlify-cli deploy --site ${{secrets.NETLIFY_SITE_ID}} --auth ${{secrets.NETLIFY_AUTH_TOKEN}} --prod
