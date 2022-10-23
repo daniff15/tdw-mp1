@@ -39,7 +39,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: validation
+    needs: [validation]
     steps:
       - uses: actions/checkout@v2
       - name: Cache node modules
@@ -57,12 +57,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - uses: actions/checkout@v2
-      - name: Deploy to netlify
-        uses: netlify/actions/cli@master
-        env:
+      - uses: actions/checkout@v1
+      - uses: nelonoel/branch-name@v1.0.1
+      - uses: jsmrcaga/action-netlify-deploy@master
+        with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          deploy_alias: ${{ env.BRANCH_NAME }}
+      - name: Status check
+        uses: Sibz/github-status-action@v1.1.1
         with:
-          args: deploy --dir=out --prod
-          secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'
+          authToken: ${{ secrets.GITHUB_TOKEN }}
+          context: Netlify preview
+          state: success
+          target_url: https://${{ env.BRANCH_NAME }}--my-site.netlify.app
