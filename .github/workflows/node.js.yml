@@ -52,26 +52,27 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - name: Build
         run: npm run build
-      - name: Cache out file
-        id: cache-out
+      - name: Cache build
+        id: cache-build
         uses: actions/cache@v2
         env:
-          cache-name: cache-out
+          cache-name: cache-build
         with:
-          path: out
+          path: build
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
   deploy:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - name: Get Cached Out file
-        id: cache-out
+      - uses: actions/checkout@v2
+      - name: Use cached build in deploy
         uses: actions/cache@v2
-        env:
-          cache-name: cache-out
+        id: cache-build
         with:
-          path: out
+          path: build
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - name: Deploy
-        run: npx netlify-cli deploy --site ${{secrets.NETLIFY_SITE_ID}} --auth ${{secrets.NETLIFY_AUTH_TOKEN}} --prod
+      - uses: jsmrcaga/action-netlify-deploy@master
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
