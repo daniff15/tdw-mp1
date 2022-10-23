@@ -52,20 +52,27 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - name: Build
         run: npm run build
-      - name: Upload Out file
-        uses: actions/upload-artifact@v2
+      - name: Cache out file
+        id: cache-out
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-out
         with:
-          name: out
           path: out
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
   deploy:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - name: Download Out File
-        uses: actions/download-artifact@v2
+      - name: Get Cached Out file
+        id: cache-out
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-out
         with:
-          name: out
+          path: out
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - uses: actions/checkout@v2
       - uses: jsmrcaga/action-netlify-deploy@master
         with:
