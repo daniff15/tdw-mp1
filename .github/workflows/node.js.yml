@@ -74,7 +74,4 @@ jobs:
         with:
           path: build
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - uses: jsmrcaga/action-netlify-deploy@master
-        with:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: npx netlify-cli deploy --site ${{secrets.NETLIFY_SITE_ID}} --auth ${{secrets.NETLIFY_AUTH_TOKEN}} --prod
