@@ -55,17 +55,17 @@ jobs:
       - name: Upload Out file
         uses: actions/upload-artifact@v2
         with:
-          name: build
-          path: /github/workspace/build
+          name: out
+          path: out
 
   deploy:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - name: Download Build File
+      - name: Download Out File
         uses: actions/download-artifact@v2
         with:
-          name: build
+          name: out
       - uses: actions/checkout@v2
       - uses: jsmrcaga/action-netlify-deploy@master
         with:
