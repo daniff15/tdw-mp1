@@ -50,10 +50,6 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - uses: contentful/contentful-action@v1
-        env: # Set the secret as an input
-          SPACE_ID: ${{ secrets.SPACE_ID }}
-          MANAGEMENT_API_KEY: ${{ secrets.MANAGEMENT_API_KEY }}
       - name: Build
         run: npm run build
       - name: Store npm run build file in cache
