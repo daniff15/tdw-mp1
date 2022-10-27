@@ -50,6 +50,11 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Use contentful
+        uses: contentful/contentful-action@v1
+        env: # Set the secret as an input
+          SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+          MANAGEMENT_API_KEY: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
       - name: Build
         run: npm run build
       - name: Store npm run build file in cache
@@ -75,8 +80,3 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         with:
           args: deploy --dir=out --prod
-      - name: Use contentful
-        uses: contentful/contentful-action@v1
-        env: # Set the secret as an input
-          SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
-          ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
