@@ -51,10 +51,12 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - name: Use contentful
-        uses: contentful-userland/contentful-action@main
+        id: migrations
+        uses: contentful/contentful-action@main
         env:
           SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
-          ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+          MANAGEMENT_API_KEY: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+          MIGRATIONS_DIR: ./migrations
       - name: Build
         run: npm run build
       - name: Store npm run build file in cache
