@@ -79,4 +79,4 @@ jobs:
         uses: contentful/contentful-action@v1
         env: # Set the secret as an input
           SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
-          MANAGEMENT_API_KEY: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+          ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
