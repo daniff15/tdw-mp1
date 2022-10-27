@@ -76,7 +76,7 @@ jobs:
         with:
           args: deploy --dir=out --prod
       - name: Use contentful
-        uses: contentful/actions@master
+        uses: contentful/contentful-action@v1
         with:
           space-id: ${{ secrets.CONTENTFUL_SPACE_ID }}
           acess-token: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
