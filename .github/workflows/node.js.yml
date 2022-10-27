@@ -52,13 +52,10 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - name: Build
         run: npm run build
-      - name: Cache build
-        id: cache-build
+      - name: Store npm run build file in cache
         uses: actions/cache@v2
-        env:
-          cache-name: cache-build
         with:
-          path: build
+          path: dist
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
   deploy:
@@ -66,13 +63,15 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v2
-      - name: Use cached build in deploy
-        id: cache-build
+      - name: Use npm run build file stored in cache
         uses: actions/cache@v2
-        env:
-          cache-name: cache-build
         with:
-          path: build
+          path: dist
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - name: Deploy
-        run: npx netlify-cli deploy --site ${{secrets.NETLIFY_SITE_ID}} --auth ${{secrets.NETLIFY_AUTH_TOKEN}} --prod
+      - name: Deploy to netlify
+        uses: netlify/actions/cli@master
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        with:
+          args: deploy --dir=dist --prod
