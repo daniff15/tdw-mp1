@@ -55,7 +55,7 @@ jobs:
         uses: contentful/contentful-action@main
         env:
           SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
-          MANAGEMENT_API_KEY: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+          ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
           MIGRATIONS_DIR: ./migrations
       - name: Build
         run: npm run build
