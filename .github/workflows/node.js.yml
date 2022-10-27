@@ -77,8 +77,6 @@ jobs:
           args: deploy --dir=out --prod
       - name: Use contentful
         uses: contentful/contentful-action@v1
-        with:
-          space-id: ${{ secrets.CONTENTFUL_SPACE_ID }}
-          acess-token: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
-          content-file: contentful/contentful.json
-          preview: true
+        env: # Set the secret as an input
+          SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+          MANAGEMENT_API_KEY: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
