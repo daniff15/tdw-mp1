@@ -50,13 +50,11 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - name: Use contentful
-        id: migrations
-        uses: contentful/contentful-action@main
-        env:
-          SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
-          ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
-          MIGRATIONS_DIR: ./migrations
+      - uses: xmflsct/action-publish-gatsby@v1 # Uses this action to run further steps
+        with:
+          token: ${{ secrets.TOKEN }} # Your personal access token of GitHub, read more below of how to obtain one and keep it safe
+          contentfulSpace: ${{ secrets.CONTENTFUL_SPACE_ID }} # Your Space ID in Contentful
+          contentfulToken: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }} # Your access token of Contentful
       - name: Build
         run: npm run build
       - name: Store npm run build file in cache
