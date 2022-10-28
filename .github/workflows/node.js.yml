@@ -51,7 +51,7 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - name: Use contentful
-        uses: contentful/contentful-action@main
+        uses: contentful/contentful-action@v1
         with:
           space_id: ${{ secrets.CONTENTFUL_SPACE_ID }}
           management_api_key: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
