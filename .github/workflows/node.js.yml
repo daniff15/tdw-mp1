@@ -50,8 +50,12 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - name: Use contentful on build file
-        run: cp .env.production .env
+      - name: Use contentful
+        uses: contentful/actions@v1
+        with:
+          space-id: ${{ secrets.CONTENTFUL_SPACE_ID }}
+          management-token: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+          content-file: contentful/export.json
       - name: Build
         run: npm run build
       - name: Store npm run build file in cache
