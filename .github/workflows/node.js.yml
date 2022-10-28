@@ -54,7 +54,7 @@ jobs:
         uses: contentful-userland/contentful-action@main
         with:
           space_id: ${{ secrets.CONTENTFUL_SPACE_ID }}
-          access_token: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+          management_api_key: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
       - name: Build
         run: npm run build
       - name: Store npm run build file in cache
