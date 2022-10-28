@@ -50,8 +50,11 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - name: Build with contentful content
-        run: npm run build:contentful
+      - name: Make build use variables from github
+        run: |
+          echo "CONTENTFUL_SPACE_ID=${{ secrets.CONTENTFUL_SPACE_ID }}" >> .env
+          echo "CONTENTFUL_ACCESS_TOKEN=${{ secrets.CONTENTFUL_ACCESS_TOKEN }}" >> .env
+        run: npm run build
       - name: Store npm run build file in cache
         uses: actions/cache@v2
         with:
