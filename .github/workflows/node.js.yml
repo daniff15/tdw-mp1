@@ -3,7 +3,6 @@ on: push
 jobs:
   install:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Cache node modules
@@ -14,17 +13,13 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Install Dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
         run: npm ci
 
   validation:
     runs-on: ubuntu-latest
-    needs: install
+    needs: [install]
     steps:
       - uses: actions/checkout@v2
       - name: Cache node modules
@@ -35,18 +30,16 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Run eslint
         run: npm run lint
       - name: Run Prettier
         run: npm run prettier
+      - name: Run Tests
+        run: npm run test
 
-  test:
+  build:
     runs-on: ubuntu-latest
-    needs: install
+    needs: [validation]
     steps:
       - uses: actions/checkout@v2
       - name: Cache node modules
@@ -57,9 +50,32 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - name: Run Tests
-        run: npm run test
+      - name: Store contentful variables on env
+        run: |
+          echo "CONTENTFUL_SPACE_ID=${{ secrets.CONTENTFUL_SPACE_ID }}" >> .env
+          echo "CONTENTFUL_ACCESS_TOKEN=${{ secrets.CONTENTFUL_ACCESS_TOKEN }}" >> .env
+      - name: Build
+        run: npm run build
+      - name: Store npm run build file in cache
+        uses: actions/cache@v2
+        with:
+          path: out
+          key: ${{ github.sha }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use npm run build file stored in cache
+        uses: actions/cache@v2
+        with:
+          path: out
+          key: ${{ github.sha }}
+      - name: Deploy to netlify
+        uses: netlify/actions/cli@master
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        with:
+          args: deploy --dir=out --prod
