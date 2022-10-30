@@ -4,10 +4,11 @@ on:
 
   push:
 
+  pull_request:
+
   repository_dispatch:
     types: [publish-event]
 
-#test comment
 jobs:
   install:
     runs-on: ubuntu-latest
