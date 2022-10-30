@@ -67,7 +67,6 @@ jobs:
         uses: actions/cache@v2
         with:
           path: out
-          key: ${{ github.job_id }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -78,7 +77,6 @@ jobs:
         uses: actions/cache@v2
         with:
           path: out
-          key: ${{ github.job_id }}
       - name: Deploy to netlify
         uses: netlify/actions/cli@master
         env:
