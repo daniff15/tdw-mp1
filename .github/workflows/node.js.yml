@@ -1,8 +1,9 @@
-name: Eleventy Build on Contentful Publish Event
 on:
-repository_dispatch:
- 	types: [publish-event]
-
+  schedule:
+    - cron: "0 0 * * *"
+  repository_dispatch:
+    types: [publish-event]
+    
 jobs:
   install:
     runs-on: ubuntu-latest
