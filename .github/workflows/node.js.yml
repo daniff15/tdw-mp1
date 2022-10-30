@@ -4,8 +4,6 @@ on:
 
   push:
 
-  pull_request:
-
   repository_dispatch:
     types: [publish-event]
 
